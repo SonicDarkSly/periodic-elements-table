@@ -1,0 +1,14 @@
+@import "./settings/_settings";
+@import "./pages/home";
+@import "./components/table";
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: rgb(0, 0, 0);
+    background-attachment: fixed;
+    color: white;
+}
