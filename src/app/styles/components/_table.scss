@@ -1,91 +1,127 @@
 .container {
+  margin: 0 auto;
+  width: 95%;
 
-        margin: 5px auto;
-        width: 95%;
+  .periodicTable {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    width: 100%;
+    max-width: 500px;
+    color: black;
+  }
 
-      
-        .periodicTable {
-          display: grid;
-          grid-template-columns: repeat(18, 1fr);
-          width: 100%; 
-          max-width: 900px;
-          color: black;
-          
-        }
-    
-        .element {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          background-color: #f2f2f2;
-          border-radius: 5px;
-          padding: 5px;
-          margin: 5px;
-          font-size: 11px;
-          height: 60px;
-          width: 60px;
-          position: relative;
-          overflow: hidden;
-        
-          &:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 5px;
-            box-shadow: 0 0 5px 5px #000;
-            opacity: 0;
-            animation: neonEffect 1.5s infinite;
-          }
-        
-          @keyframes neonEffect {
-            0% {
-              opacity: 0;
-              box-shadow: 0 0 5px 5px #000;
-            }
-            50% {
-              opacity: 1;
-              box-shadow: 0 0 20px 10px #000;
-            }
-            100% {
-              opacity: 0;
-              box-shadow: 0 0 5px 5px #000;
-            }
-          }
-        }
-        
-        
+  .element {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    font-size: 11px;
+    height: 60px;
+    width: 60px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0.6; // Opacité par défaut
 
-      .lanthanides {
-        background-color: rgb(161, 0, 161);
+    &:not(.empty) { // Exclure la classe .empty de l'effet de survol
+      &:hover {
+        opacity: 1; // Opacité au survol
+        box-shadow: 0 0 17px #6c38c4; // Utilisation de currentColor pour la couleur de la bordure
+        cursor: pointer;
       }
-  
-      .actinides {
-        background-color: rgb(103, 1, 137);
-      }
+    }
 
- 
+    &.nonmetal {
+      background-color: #ff5252;
+    }
+
+    &.noble-gas {
+      background-color: #ff4081;
+    }
+
+    &.alkali-metal {
+      background-color: #ff669d;
+    }
+
+    &.alkaline-earth-metal {
+      background-color: #ff8cc1;
+    }
+
+    &.metalloid {
+      background-color: #ffabf2;
+    }
+
+    &.halogen {
+      background-color: #9c6eff;
+    }
+
+    &.metal {
+      background-color: #536dfe;
+    }
+
+    &.transition-metal {
+      background-color: #4ae8b0;
+    }
+
+    &.lanthanoid {
+      background-color: #69f0ae;
+      color: #e8cffd;
+    }
+
+    &.actinoid {
+      background-color: #b2ff59;
+      color: #e8cffd;
+    }
+
+    &.post-transition-metal {
+      background-color: #eeff41;
+    }
+  }
+
+  .lanthanides {
+    background-color: rgb(136, 0, 136);
+    color: rgb(232, 207, 253);
+
+    .rotate-text {
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+      display: inline-block;
+      font-weight: 800;
+    }
+  }
+
+  .actinides {
+    background-color: rgb(77, 1, 103);
+    color: rgb(232, 207, 253);
+
+    .rotate-text {
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+      display: inline-block;
+      font-weight: 800;
+      background-color: rgb(77, 1, 103);
+      color: rgb(232, 207, 253);
+    }
+  }
+
   .empty {
     opacity: 0;
   }
-  
+
   .symbol {
     font-weight: bold;
   }
-  
+
   .name {
     text-align: center;
   }
-  
+
   .atomicNumber,
   .atomicMass {
     font-size: 10px;
-    color: #888;
+    color: #4f4f4f;
   }
-
-  
-
 }
