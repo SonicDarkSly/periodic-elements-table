@@ -23,7 +23,8 @@
       "block": "s",
       "cpkHexColor": "FFFFFF",
       "period": 1,
-      "group": 1
+      "group": 1,
+      "electronLayers": [1]
     },
     {
       "atomicNumber": 2,
@@ -48,7 +49,8 @@
       "block": "p",
       "cpkHexColor": "D9FFFF",
       "period": 1,
-      "group": 18
+      "group": 18,
+      "electronLayers": [2]
     },
     {
       "atomicNumber": 3,
@@ -2348,7 +2350,8 @@
       "block": "f",
       "cpkHexColor": "006BFF",
       "period": 7,
-      "group": 3
+      "group": 3,
+      "electronLayers": [2, 8, 18, 32, 24, 8, 2]
     },
     {
       "atomicNumber": 95,

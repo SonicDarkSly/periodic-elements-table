@@ -1,0 +1,12 @@
+.atom-animation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px; /* Ajustez la hauteur selon vos besoins */
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+
+  }

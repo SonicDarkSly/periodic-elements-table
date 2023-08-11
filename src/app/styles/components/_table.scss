@@ -3,11 +3,11 @@
   width: 95%;
 
   .periodicTable {
-    display: grid;
-    grid-template-columns: repeat(18, 1fr);
-    width: 100%;
-    max-width: 500px;
+    display: flex;
     color: black;
+    max-width: 100%;
+    justify-content: center;
+    border: red solid 1px;
   }
 
   .element {
@@ -18,15 +18,16 @@
     background-color: #f2f2f2;
     border-radius: 5px;
     padding: 5px;
-    margin: 5px;
+    margin: 3px;
     font-size: 11px;
-    height: 60px;
     width: 60px;
+    height: 60px;
     position: relative;
     overflow: hidden;
     opacity: 0.6; // Opacité par défaut
 
-    &:not(.empty) { // Exclure la classe .empty de l'effet de survol
+    &:not(.empty) {
+      // Exclure la classe .empty de l'effet de survol
       &:hover {
         opacity: 1; // Opacité au survol
         box-shadow: 0 0 17px #6c38c4; // Utilisation de currentColor pour la couleur de la bordure
@@ -117,11 +118,14 @@
 
   .name {
     text-align: center;
+    font-size: 11px;
+    max-height: 3em;
   }
 
   .atomicNumber,
   .atomicMass {
-    font-size: 10px;
-    color: #4f4f4f;
+    text-align: center;
+    font-size: 11px;
+    max-height: 3em;
   }
 }

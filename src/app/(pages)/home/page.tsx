@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Element {
   symbol: string;
@@ -10,8 +11,16 @@ interface Element {
   groupBlock: string;
 }
 
+
 const Homepage: React.FC = () => {
+
   const [elements, setElements] = useState<Element[]>([]);
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push('/elements/94');
+  };
 
   useEffect(() => {
     const fetchElements = async () => {
@@ -79,9 +88,8 @@ const Homepage: React.FC = () => {
             if (element) {
               const group = getClassForGroupBlock(element.groupBlock);
               return (
-                <div key={key++} className={`element ${group}`}>
+                <div key={key++} className={`element ${group}`} onClick={handleClick} >
                   <div className="symbol">{element.symbol}</div>
-                  <div className="name">{element.name}</div>
                   <div className="atomicNumber">{element.atomicNumber}</div>
                   <div className="atomicMass">
                     {typeof element.atomicMass === 'number'
@@ -125,9 +133,8 @@ const Homepage: React.FC = () => {
 
       if (element) {
         elementsList.push(
-          <div key={key++} className={`element ${startNumber === 57 ? 'lanthanides' : 'actinides'}`}>
+          <div key={key++} className={`element ${startNumber === 57 ? 'lanthanides' : 'actinides'}`} onClick={handleClick}>
             <div className="symbol">{element.symbol}</div>
-            <div className="name">{element.name}</div>
             <div className="atomicNumber">{element.atomicNumber}</div>
             <div className="atomicMass">
               {typeof element.atomicMass === 'number'
@@ -156,6 +163,7 @@ const Homepage: React.FC = () => {
     return generateElements(89, 103);
   };
 
+
   return (
     <div className="container">
       <h1>Tableau périodique des éléments</h1>
@@ -164,6 +172,9 @@ const Homepage: React.FC = () => {
       <div className="periodicTable">{generateLanthanides()}</div>
       <h2>Actinides</h2>
       <div className="periodicTable">{generateActinides()}</div>
+
+
+
     </div>
   );
 };
