@@ -18,8 +18,8 @@ const Homepage: React.FC = () => {
 
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push('/elements/94');
+  const handleClick = (atomicNumber: number) => {
+    router.push(`/elements/${atomicNumber}`);
   };
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const Homepage: React.FC = () => {
             if (element) {
               const group = getClassForGroupBlock(element.groupBlock);
               return (
-                <div key={key++} className={`element ${group}`} onClick={handleClick} >
+                <div key={key++} className={`element ${group}`} onClick={()=>handleClick(element.atomicNumber)}>
                   <div className="symbol">{element.symbol}</div>
                   <div className="atomicNumber">{element.atomicNumber}</div>
                   <div className="atomicMass">
@@ -133,7 +133,7 @@ const Homepage: React.FC = () => {
 
       if (element) {
         elementsList.push(
-          <div key={key++} className={`element ${startNumber === 57 ? 'lanthanides' : 'actinides'}`} onClick={handleClick}>
+          <div key={key++} className={`element ${startNumber === 57 ? 'lanthanides' : 'actinides'}`} onClick={()=>handleClick(element.atomicNumber)}>
             <div className="symbol">{element.symbol}</div>
             <div className="atomicNumber">{element.atomicNumber}</div>
             <div className="atomicMass">

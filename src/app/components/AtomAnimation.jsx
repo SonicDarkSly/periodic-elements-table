@@ -96,13 +96,13 @@ const AtomAnimation = React.memo(({ protonCount, neutronCount, electronCount, el
   useEffect(() => {
 
     if (!animationStarted) {
-      return; 
+      return; // Si l'animation n'est pas démarrée, ne faites rien
     }
 
     const scene = new THREE.Scene();
     const width = 600;
     const height = 400;
-    const camera = new THREE.OrthographicCamera(width / -1, width / 1, height / 1, height / -1, -1000, 1000);
+    const camera = new THREE.OrthographicCamera(width / -1, width / 1, height / 1, height / -1, -500, 500);
     camera.position.z = 10;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -137,7 +137,8 @@ const AtomAnimation = React.memo(({ protonCount, neutronCount, electronCount, el
         let posX = 0;
         let posY = 0;
         let posZ = 0;
-
+    
+        // Réduire la portée de positionnement aléatoire
         if (protonCount <= 4) {
           posX = (Math.random() - 0.5) * 1.5;
           posY = (Math.random() - 0.5) * 1.5;
@@ -198,7 +199,7 @@ const AtomAnimation = React.memo(({ protonCount, neutronCount, electronCount, el
     
         nucleus.rotation.x += 0.05;
         nucleus.rotation.y += 0.05;
-        nucleus.rotation.z += 0.05;
+        nucleus.rotation.z += 0.05; // Ajout d'une rotation supplémentaire pour le noyau
     
         renderer.render(scene, camera);
       }

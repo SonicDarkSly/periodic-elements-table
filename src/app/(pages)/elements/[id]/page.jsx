@@ -1,22 +1,30 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation'
-import AtomAnimation from '../../../components/AtomAnimation';
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import AtomAnimation from "../../../components/AtomAnimation";
 
 const ElementPage = () => {
-  const params = useParams()
-  
-  const [animationStarted, setAnimationStarted] = useState(false);
+  const params = useParams();
 
-  console.log(params.id);
-  
-  const element = {
-    symbol: 'Pu',
-    name: 'Plutonium',
-    atomicNumber: Number(params.id),
-    "electronLayers": [2, 8, 18, 32, 24, 8, 2]
+  const [animationStarted, setAnimationStarted] = useState(false);
+  const [element, setElement] = useState({});
+
+  const fetchElements = async () => {
+    try {
+      const response = await fetch(
+        `/api/elements/getOneElement?number=${params.id}`
+      );
+      const data = await response.json();
+      setElement(data);
+    } catch (error) {
+      console.error("Error fetching elements:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchElements();
+  }, [element]);
 
   const startAnimation = () => {
     setAnimationStarted(!animationStarted);
@@ -26,16 +34,18 @@ const ElementPage = () => {
     <div>
       <h1>Element Details</h1>
       <button onClick={startAnimation}>Démarrer l'animation</button>
-      <AtomAnimation
-        protonCount={element.atomicNumber}
-        neutronCount={145}
-        electronCount={element.atomicNumber}
-        elementData={element}
-        animationStarted={animationStarted}
-      />
+
+      {element && (
+        <AtomAnimation
+          protonCount={element.protons}
+          neutronCount={element.neutrons}
+          electronCount={element.atomicNumber}
+          elementData={element}
+          animationStarted={animationStarted}
+        />
+      )}
     </div>
   );
-  
 };
 
 export default ElementPage;
