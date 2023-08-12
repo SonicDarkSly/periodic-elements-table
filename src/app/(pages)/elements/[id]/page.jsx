@@ -7,7 +7,6 @@ import AtomAnimation from "../../../components/AtomAnimation";
 const ElementPage = () => {
   const params = useParams();
 
-  const [animationStarted, setAnimationStarted] = useState(false);
   const [element, setElement] = useState({});
 
   const fetchElements = async () => {
@@ -26,14 +25,11 @@ const ElementPage = () => {
     fetchElements();
   }, []);
 
-  const startAnimation = () => {
-    setAnimationStarted(!animationStarted);
-  };
 
   return (
     <div>
       <h1>Element Details</h1>
-      <button onClick={startAnimation}>Démarrer l'animation</button>
+      <a href="/home">retour</a>
 
       {element && (
         <AtomAnimation
@@ -41,7 +37,6 @@ const ElementPage = () => {
           neutronCount={element.neutrons}
           electronCount={element.atomicNumber}
           elementData={element}
-          animationStarted={animationStarted}
         />
       )}
     </div>

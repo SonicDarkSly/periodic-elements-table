@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import React, { useRef, useLayoutEffect, useEffect } from "react";
+import * as THREE from "three";
 
 const Colors = {
-  red: 0xFF5252,
-  white: 0xFFFFFF,
+  red: 0xff5252,
+  white: 0xffffff,
   brown: 0x59332e,
-  pink: 0xF5986E,
+  pink: 0xf5986e,
   brownDark: 0x23190f,
-  blue: 0x6DBAD8,
-  green: 0x46B46B,
+  blue: 0x6dbad8,
+  green: 0x46b46b,
 };
 
 const createSphere = (params) => {
@@ -27,16 +27,30 @@ const createSphere = (params) => {
 };
 
 const createValence = (ringNumber, electronCount) => {
-  const baseRadius = window.innerWidth > window.innerHeight ? window.innerHeight - 40 / 2 : window.innerWidth - 40 / 2;
+  const baseRadius =
+    window.innerWidth > window.innerHeight
+      ? window.innerHeight - 40 / 2
+      : window.innerWidth - 40 / 2;
   const radius = 50 + (baseRadius / 20) * ringNumber * 1.5;
-  const ring = createTorus(radius, baseRadius / 2400, 20, 100, Math.PI * 2, '#00FF00', 0);
+  const ring = createTorus(
+    radius,
+    baseRadius / 2400,
+    20,
+    100,
+    Math.PI * 2,
+    "#00FF00",
+    0
+  );
 
   const electrons = [];
   let currentLayer = 0;
 
   while (electronCount > 0) {
     const electronPerLayer = [2, 8, 18, 32, 50, 72];
-    const electronsInLayer = Math.min(electronPerLayer[currentLayer], electronCount);
+    const electronsInLayer = Math.min(
+      electronPerLayer[currentLayer],
+      electronCount
+    );
     const angleIncrement = (Math.PI * 2) / electronsInLayer;
     let angle = Math.random() * angleIncrement;
 
@@ -46,7 +60,13 @@ const createValence = (ringNumber, electronCount) => {
 
       angle += angleIncrement;
 
-      const electron = createSphere({ r: 12, x: posX, y: posY, color: Colors.green, opacity: 0.675 });
+      const electron = createSphere({
+        r: 12,
+        x: posX,
+        y: posY,
+        color: Colors.green,
+        opacity: 0.675,
+      });
       electrons.push(electron);
     }
 
@@ -65,7 +85,7 @@ const createValence = (ringNumber, electronCount) => {
 };
 
 const createValenceLayers = (electronCount, elementData) => {
-  const electronPerLayer = elementData.electronLayers;
+  const electronPerLayer = elementData.electronLayers || [2, 8, 18, 32, 24, 8, 2];
   const valences = [];
 
   for (let i = 0; i < electronPerLayer.length; i++) {
@@ -81,126 +101,160 @@ const createValenceLayers = (electronCount, elementData) => {
   return valences;
 };
 
-const createTorus = (r, tubeD, radialSegs, tubularSegs, arc, color, rotationX) => {
-  const geometry = new THREE.TorusGeometry(r, tubeD, radialSegs, tubularSegs, arc);
-  const material = new THREE.MeshLambertMaterial({ color: color || '#cdcdcd' });
+const createTorus = (
+  r,
+  tubeD,
+  radialSegs,
+  tubularSegs,
+  arc,
+  color,
+  rotationX
+) => {
+  const geometry = new THREE.TorusGeometry(
+    r,
+    tubeD,
+    radialSegs,
+    tubularSegs,
+    arc
+  );
+  const material = new THREE.MeshLambertMaterial({ color: color || "#cdcdcd" });
   const torus = new THREE.Mesh(geometry, material);
   torus.rotation.x = rotationX;
 
   return torus;
 };
 
-const AtomAnimation = React.memo(({ protonCount, neutronCount, electronCount, elementData, animationStarted }) => {
-  const containerRef = useRef(null);
-  const scene = useRef(new THREE.Scene());
-  const renderer = useRef(null);
-  const camera = useRef(null);
-  const valences = useRef([]);
-  const nucleusRotationSpeed = neutronCount < 70 ? 0.012 : 0.005; // Vitesse de rotation du noyau
+const AtomAnimation = React.memo(
+  ({ protonCount, neutronCount, electronCount, elementData }) => {
 
-  const createAtom = (protonCount, neutronCount, electronCount, elementData) => {
-    const nucleus = new THREE.Group();
-    
-    const protonGeometry = new THREE.SphereGeometry(2, 14, 14);
-    const protonMaterial = new THREE.MeshPhongMaterial({ color: Colors.red, transparent: true, opacity: 0.737 });
-    
-    // position des prontons differente si < 4
-    for (let i = 0; i < protonCount; i++) {
-      let posX = 0;
-      let posY = 0;
-      let posZ = 0;
+    if (
+      protonCount === undefined ||
+      neutronCount === undefined ||
+      electronCount === undefined ||
+      !elementData
+    ) {
+      return <div>Chargement des données...</div>;
+    }
+
+    const containerRef = useRef(null);
+    const scene = useRef(new THREE.Scene());
+    const renderer = useRef(null);
+    const camera = useRef(null);
+    const valences = useRef([]);
+    const nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.005; // Vitesse de rotation du noyau
+
+    const createAtom = (protonCount, neutronCount, electronCount, elementData) => {
+      const nucleus = new THREE.Group();
       
-      if (protonCount <= 4) {
-        posX = (Math.random() - 0.5) * 1.5;
-        posY = (Math.random() - 0.5) * 1.5;
-        posZ = (Math.random() - 0.5) * 1.5;
-      } else {
-        posX = (Math.random() - 0.5) * 6;
-        posY = (Math.random() - 0.5) * 6;
-        posZ = (Math.random() - 0.4) * 6;
+      const protonGeometry = new THREE.SphereGeometry(2, 14, 14);
+      const protonMaterial = new THREE.MeshPhongMaterial({ color: Colors.red, transparent: true, opacity: 0.737 });
+      
+      // position des prontons differente si < 4
+      for (let i = 0; i < protonCount; i++) {
+        let posX = 0;
+        let posY = 0;
+        let posZ = 0;
+        
+        if (protonCount <= 4) {
+          posX = (Math.random() - 0.5) * 1.5;
+          posY = (Math.random() - 0.5) * 1.5;
+          posZ = (Math.random() - 0.5) * 1.5;
+        } else {
+          posX = (Math.random() - 0.5) * 6;
+          posY = (Math.random() - 0.5) * 6;
+          posZ = (Math.random() - 0.4) * 6;
+        }
+        
+        const proton = new THREE.Mesh(protonGeometry, protonMaterial);
+        proton.position.set(posX, posY, posZ);
+        nucleus.add(proton);
       }
       
-      const proton = new THREE.Mesh(protonGeometry, protonMaterial);
-      proton.position.set(posX, posY, posZ);
-      nucleus.add(proton);
-    }
-    
-    const neutronGeometry = new THREE.SphereGeometry(2, 14, 14);
-    const neutronMaterial = new THREE.MeshPhongMaterial({ color: Colors.blue, transparent: true, opacity: 0.773 });
-    
-    for (let i = 0; i < neutronCount; i++) {
-      let posX = 0;
-      let posY = 0;
-      let posZ = 0;
+      const neutronGeometry = new THREE.SphereGeometry(2, 14, 14);
+      const neutronMaterial = new THREE.MeshPhongMaterial({ color: Colors.blue, transparent: true, opacity: 0.773 });
       
-      // position des neutrons differente si < 4
-      if (neutronCount <= 4) {
-        posX = (Math.random() - 0.5) * 1.5;
-        posY = (Math.random() - 0.5) * 1.5;
-        posZ = (Math.random() - 0.5) * 1.5;
-      } else {
-        posX = (Math.random() - 0.5) * 6;
-        posY = (Math.random() - 0.5) * 6;
-        posZ = (Math.random() - 0.4) * 6;
+      for (let i = 0; i < neutronCount; i++) {
+        let posX = 0;
+        let posY = 0;
+        let posZ = 0;
+        
+        // position des neutrons differente si < 4
+        if (neutronCount <= 4) {
+          posX = (Math.random() - 0.5) * 1.5;
+          posY = (Math.random() - 0.5) * 1.5;
+          posZ = (Math.random() - 0.5) * 1.5;
+        } else {
+          posX = (Math.random() - 0.5) * 6;
+          posY = (Math.random() - 0.5) * 6;
+          posZ = (Math.random() - 0.4) * 6;
+        }
+        
+        const neutron = new THREE.Mesh(neutronGeometry, neutronMaterial);
+        neutron.position.set(posX, posY, posZ);
+        nucleus.add(neutron);
       }
       
-      const neutron = new THREE.Mesh(neutronGeometry, neutronMaterial);
-      neutron.position.set(posX, posY, posZ);
-      nucleus.add(neutron);
-    }
-    
-    nucleus.scale.set(10, 10, 10);
-    nucleus.rotation.x = Math.random() * Math.PI * 2; // Rotation initiale aléatoire
-    
-    scene.current.add(nucleus);
-    
-    valences.current = createValenceLayers(electronCount, elementData);
-    valences.current.forEach((v) => {
-      scene.current.add(v);
-    });
-    
-    function render() {
-      if (animationStarted) {
-        requestAnimationFrame(render);
-    
-        valences.current.forEach((v, i) => {
-          v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.001;
-          v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.001;
-          v.rotation.z += nucleusRotationSpeed + (i + 1) * 0.001;
+      nucleus.scale.set(10, 10, 10);
+      nucleus.rotation.x = Math.random() * Math.PI * 2; // Rotation initiale aléatoire
+      
+      scene.current.add(nucleus);
+      
+      valences.current = createValenceLayers(electronCount, elementData);
+      valences.current.forEach((v) => {
+        scene.current.add(v);
+      });
+      
+      function render() {
+
+          requestAnimationFrame(render);
+      
+          valences.current.forEach((v, i) => {
+            v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.012; // Vitesse de rotation différente pour chaque couche
+            v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.009;
+            v.rotation.z += nucleusRotationSpeed + (i + 1) * 0.005; // vitesse electron sur orbite
+          });
+      
+          nucleus.rotation.x += nucleusRotationSpeed;
+          nucleus.rotation.y += nucleusRotationSpeed;
+          nucleus.rotation.z += nucleusRotationSpeed;
+      
+          renderer.current.render(scene.current, camera.current);
+        
+      }
+      
+
+        render();
+      
+    };
+
+    useEffect(() => {
+      if (!camera.current) {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        camera.current = new THREE.OrthographicCamera(
+          width / -2,
+          width / 2,
+          height / 2,
+          height / -2,
+          -1000,
+          1000
+        );
+        camera.current.position.z = 10;
+      }
+
+      if (!renderer.current) {
+        renderer.current = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
         });
-    
-        nucleus.rotation.x += nucleusRotationSpeed;
-        nucleus.rotation.y += nucleusRotationSpeed;
-        nucleus.rotation.z += nucleusRotationSpeed;
-    
-        renderer.current.render(scene.current, camera.current);
-      }
-    }
-    
-    if (animationStarted) {
-      render();
-    }
-  };
-  
+        renderer.current.setClearColor(0xececec, 0);
+        renderer.current.setSize(window.innerWidth, window.innerHeight);
 
-console.log(animationStarted);
+        if (containerRef.current) {
+          containerRef.current.appendChild(renderer.current.domElement);
+        }
 
-  if (animationStarted) {
-    if (!camera.current) {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      camera.current = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, -1000, 1000);
-      camera.current.position.z = 10;
-    }
-
-    if (!renderer.current) {
-      renderer.current = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.current.setClearColor(0xECECEC, 0);
-      renderer.current.setSize(window.innerWidth, window.innerHeight);
-
-      containerRef.current.appendChild(renderer.current.domElement);
-
-      const ambientLight = new THREE.AmbientLight(0xFFFFFF);
+              const ambientLight = new THREE.AmbientLight(0xFFFFFF);
       scene.current.add(ambientLight);
 
       const lights = [
@@ -222,12 +276,12 @@ console.log(animationStarted);
       nucleus.name = 'nucleus';
       scene.current.add(nucleus);
 
-      createAtom(protonCount, neutronCount, electronCount, elementData);
-    }
-  }
+        createAtom(protonCount, neutronCount, electronCount, elementData);
+      }
+    }, [protonCount, neutronCount, electronCount, elementData]);
 
-  return <div ref={containerRef}></div>;
-});
+    return <div className="test" ref={containerRef}></div>;
+  }
+);
 
 export default AtomAnimation;
-
