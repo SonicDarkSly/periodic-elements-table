@@ -1,24 +1,14 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface Element {
-  symbol: string;
-  name: string;
-  atomicNumber: number;
-  atomicMass: string | number;
-  groupBlock: string;
-}
-
-
-const Homepage: React.FC = () => {
-
-  const [elements, setElements] = useState<Element[]>([]);
+const Homepage = () => {
+  const [elements, setElements] = useState([]);
 
   const router = useRouter();
 
-  const handleClick = (atomicNumber: number) => {
+  const handleClick = (atomicNumber) => {
     router.push(`/elements/${atomicNumber}`);
   };
 
@@ -36,7 +26,7 @@ const Homepage: React.FC = () => {
     fetchElements();
   }, []);
 
-  const tableLayout: Array<Array<number | null>> = [
+  const tableLayout = [
     [1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 2],
     [3, 4, null, null, null, null, null, null, null, null, null, null, 5, 6, 7, 8, 9, 10],
     [11, 12, null, null, null, null, null, null, null, null, null, null, 13, 14, 15, 16, 17, 18],
@@ -46,7 +36,7 @@ const Homepage: React.FC = () => {
     [87, 88, 89103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118],
   ];
 
-  const getClassForGroupBlock = (groupBlock: string): string => {
+  const getClassForGroupBlock = (groupBlock) => {
     switch (groupBlock) {
       case 'nonmetal':
         return 'nonmetal';
@@ -75,7 +65,7 @@ const Homepage: React.FC = () => {
     }
   };
 
-  const generatePeriodicTable = (): JSX.Element[] => {
+  const generatePeriodicTable = () => {
     let key = 0;
 
     const periodicTable = tableLayout[0].map((_, columnIndex) => (
@@ -88,7 +78,7 @@ const Homepage: React.FC = () => {
             if (element) {
               const group = getClassForGroupBlock(element.groupBlock);
               return (
-                <div key={key++} className={`element ${group}`} onClick={()=>handleClick(element.atomicNumber)}>
+                <div key={key++} className={`element ${group}`} onClick={() => handleClick(element.atomicNumber)}>
                   <div className="symbol">{element.symbol}</div>
                   <div className="atomicNumber">{element.atomicNumber}</div>
                   <div className="atomicMass">
@@ -100,7 +90,10 @@ const Homepage: React.FC = () => {
               );
             } else {
               return (
-                <div key={key++} className={elementNumber === 5771 ? `element lanthanides` : elementNumber === 89103 ? `element actinides` : `element`}>
+                <div
+                  key={key++}
+                  className={elementNumber === 5771 ? `element lanthanides` : elementNumber === 89103 ? `element actinides` : `element`}
+                >
                   <div className="name">
                     <span className="rotate-text">
                       {elementNumber === 5771 && 'lanthanides'}
@@ -124,8 +117,8 @@ const Homepage: React.FC = () => {
     return periodicTable;
   };
 
-  const generateElements = (startNumber: number, endNumber: number): JSX.Element[] => {
-    const elementsList: JSX.Element[] = [];
+  const generateElements = (startNumber, endNumber) => {
+    const elementsList = [];
     let key = 0;
 
     for (let i = startNumber; i <= endNumber; i++) {
@@ -133,7 +126,7 @@ const Homepage: React.FC = () => {
 
       if (element) {
         elementsList.push(
-          <div key={key++} className={`element ${startNumber === 57 ? 'lanthanides' : 'actinides'}`} onClick={()=>handleClick(element.atomicNumber)}>
+          <div key={key++} className={`element ${startNumber === 57 ? 'lanthanides' : 'actinides'}`} onClick={() => handleClick(element.atomicNumber)}>
             <div className="symbol">{element.symbol}</div>
             <div className="atomicNumber">{element.atomicNumber}</div>
             <div className="atomicMass">
@@ -155,14 +148,13 @@ const Homepage: React.FC = () => {
     return elementsList;
   };
 
-  const generateLanthanides = (): JSX.Element[] => {
+  const generateLanthanides = () => {
     return generateElements(57, 71);
   };
 
-  const generateActinides = (): JSX.Element[] => {
+  const generateActinides = () => {
     return generateElements(89, 103);
   };
-
 
   return (
     <div className="container">
@@ -172,9 +164,6 @@ const Homepage: React.FC = () => {
       <div className="periodicTable">{generateLanthanides()}</div>
       <h2>Actinides</h2>
       <div className="periodicTable">{generateActinides()}</div>
-
-
-
     </div>
   );
 };

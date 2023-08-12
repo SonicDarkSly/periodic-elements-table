@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 const Colors = {
@@ -90,142 +90,144 @@ const createTorus = (r, tubeD, radialSegs, tubularSegs, arc, color, rotationX) =
   return torus;
 };
 
-const AtomAnimation = React.memo(({ protonCount, neutronCount, electronCount, elementData , animationStarted}) => {
+const AtomAnimation = React.memo(({ protonCount, neutronCount, electronCount, elementData, animationStarted }) => {
   const containerRef = useRef(null);
+  const scene = useRef(new THREE.Scene());
+  const renderer = useRef(null);
+  const camera = useRef(null);
+  const valences = useRef([]);
+  const nucleusRotationSpeed = neutronCount < 70 ? 0.012 : 0.005; // Vitesse de rotation du noyau
 
-  useEffect(() => {
-
-    if (!animationStarted) {
-      return; // Si l'animation n'est pas démarrée, ne faites rien
+  const createAtom = (protonCount, neutronCount, electronCount, elementData) => {
+    const nucleus = new THREE.Group();
+    
+    const protonGeometry = new THREE.SphereGeometry(2, 14, 14);
+    const protonMaterial = new THREE.MeshPhongMaterial({ color: Colors.red, transparent: true, opacity: 0.737 });
+    
+    // position des prontons differente si < 4
+    for (let i = 0; i < protonCount; i++) {
+      let posX = 0;
+      let posY = 0;
+      let posZ = 0;
+      
+      if (protonCount <= 4) {
+        posX = (Math.random() - 0.5) * 1.5;
+        posY = (Math.random() - 0.5) * 1.5;
+        posZ = (Math.random() - 0.5) * 1.5;
+      } else {
+        posX = (Math.random() - 0.5) * 6;
+        posY = (Math.random() - 0.5) * 6;
+        posZ = (Math.random() - 0.4) * 6;
+      }
+      
+      const proton = new THREE.Mesh(protonGeometry, protonMaterial);
+      proton.position.set(posX, posY, posZ);
+      nucleus.add(proton);
     }
-
-    const scene = new THREE.Scene();
-    const width = 600;
-    const height = 400;
-    const camera = new THREE.OrthographicCamera(width / -1, width / 1, height / 1, height / -1, -500, 500);
-    camera.position.z = 10;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setClearColor(0xECECEC, 0);
-    renderer.setSize(width, height);
-
-    const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-    scene.add(ambientLight);
-
-    const lights = [
-      new THREE.PointLight(0xffffff, 0.5, 0),
-      new THREE.PointLight(0xffffff, 0.5, 0),
-      new THREE.PointLight(0xffffff, 0.5, 0),
-      new THREE.AmbientLight(0xffffff, 0.6),
-    ];
-
-    lights[0].position.set(200, 0, 0);
-    lights[1].position.set(0, 200, 0);
-    lights[2].position.set(0, 100, 100);
-
-    lights.forEach((light) => {
-      scene.add(light);
+    
+    const neutronGeometry = new THREE.SphereGeometry(2, 14, 14);
+    const neutronMaterial = new THREE.MeshPhongMaterial({ color: Colors.blue, transparent: true, opacity: 0.773 });
+    
+    for (let i = 0; i < neutronCount; i++) {
+      let posX = 0;
+      let posY = 0;
+      let posZ = 0;
+      
+      // position des neutrons differente si < 4
+      if (neutronCount <= 4) {
+        posX = (Math.random() - 0.5) * 1.5;
+        posY = (Math.random() - 0.5) * 1.5;
+        posZ = (Math.random() - 0.5) * 1.5;
+      } else {
+        posX = (Math.random() - 0.5) * 6;
+        posY = (Math.random() - 0.5) * 6;
+        posZ = (Math.random() - 0.4) * 6;
+      }
+      
+      const neutron = new THREE.Mesh(neutronGeometry, neutronMaterial);
+      neutron.position.set(posX, posY, posZ);
+      nucleus.add(neutron);
+    }
+    
+    nucleus.scale.set(10, 10, 10);
+    nucleus.rotation.x = Math.random() * Math.PI * 2; // Rotation initiale aléatoire
+    
+    scene.current.add(nucleus);
+    
+    valences.current = createValenceLayers(electronCount, elementData);
+    valences.current.forEach((v) => {
+      scene.current.add(v);
     });
-
-    function createAtom(protonCount, neutronCount, electronCount, elementData) {
-      const nucleus = new THREE.Group();
     
-      const protonGeometry = new THREE.SphereGeometry(2, 14, 14);
-      const protonMaterial = new THREE.MeshPhongMaterial({ color: Colors.red, transparent: true, opacity: 0.737 });
-    
-      for (let i = 0; i < protonCount; i++) {
-        let posX = 0;
-        let posY = 0;
-        let posZ = 0;
-    
-        // Réduire la portée de positionnement aléatoire
-        if (protonCount <= 4) {
-          posX = (Math.random() - 0.5) * 1.5;
-          posY = (Math.random() - 0.5) * 1.5;
-          posZ = (Math.random() - 0.5) * 1.5;
-        } else {
-          posX = (Math.random() - 0.5) * 7;
-          posY = (Math.random() - 0.5) * 7;
-          posZ = (Math.random() - 0.4) * 7;
-        }
-    
-        const proton = new THREE.Mesh(protonGeometry, protonMaterial);
-        proton.position.set(posX, posY, posZ);
-        nucleus.add(proton);
-      }
-    
-      const neutronGeometry = new THREE.SphereGeometry(2, 14, 14);
-      const neutronMaterial = new THREE.MeshPhongMaterial({ color: Colors.blue, transparent: true, opacity: 0.773 });
-    
-      for (let i = 0; i < neutronCount; i++) {
-        let posX = 0;
-        let posY = 0;
-        let posZ = 0;
-    
-        if (neutronCount <= 4) {
-          posX = (Math.random() - 0.5) * 1.5;
-          posY = (Math.random() - 0.5) * 1.5;
-          posZ = (Math.random() - 0.5) * 1.5;
-        } else {
-          posX = (Math.random() - 0.5) * 7;
-          posY = (Math.random() - 0.5) * 7;
-          posZ = (Math.random() - 0.4) * 7;
-        }
-    
-        const neutron = new THREE.Mesh(neutronGeometry, neutronMaterial);
-        neutron.position.set(posX, posY, posZ);
-        nucleus.add(neutron);
-      }
-    
-      nucleus.scale.set(10, 10, 10);
-      scene.add(nucleus);
-    
-      const valences = createValenceLayers(electronCount, elementData);
-    
-      valences.forEach((v) => {
-        scene.add(v);
-      });
-    
-      function render() {
+    function render() {
+      if (animationStarted) {
         requestAnimationFrame(render);
     
-        const baseRotation = 0.06;
-    
-        valences.forEach((v, i) => {
-          v.rotation.y += baseRotation - i * 0.021;
-          v.rotation.x += baseRotation - i * 0.051;
-          v.rotation.z += baseRotation - i * 0.031;
+        valences.current.forEach((v, i) => {
+          v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.001;
+          v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.001;
+          v.rotation.z += nucleusRotationSpeed + (i + 1) * 0.001;
         });
     
-        nucleus.rotation.x += 0.05;
-        nucleus.rotation.y += 0.05;
-        nucleus.rotation.z += 0.05; // Ajout d'une rotation supplémentaire pour le noyau
+        nucleus.rotation.x += nucleusRotationSpeed;
+        nucleus.rotation.y += nucleusRotationSpeed;
+        nucleus.rotation.z += nucleusRotationSpeed;
     
-        renderer.render(scene, camera);
+        renderer.current.render(scene.current, camera.current);
       }
+    }
     
+    if (animationStarted) {
       render();
     }
+  };
+  
 
-    createAtom(protonCount, neutronCount, electronCount, elementData);
+console.log(animationStarted);
 
-    containerRef.current.appendChild(renderer.domElement);
+  if (animationStarted) {
+    if (!camera.current) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      camera.current = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, -1000, 1000);
+      camera.current.position.z = 10;
+    }
 
-    const cleanup = () => {
-      if (containerRef.current && renderer.domElement) {
-        containerRef.current.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-    };
+    if (!renderer.current) {
+      renderer.current = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.current.setClearColor(0xECECEC, 0);
+      renderer.current.setSize(window.innerWidth, window.innerHeight);
 
-    window.addEventListener('beforeunload', cleanup);
-    return () => {
-      cleanup();
-      window.removeEventListener('beforeunload', cleanup);
-    };
-  }, [protonCount, neutronCount, electronCount, elementData, animationStarted]);
+      containerRef.current.appendChild(renderer.current.domElement);
 
-  return <div ref={containerRef} ></div>;
+      const ambientLight = new THREE.AmbientLight(0xFFFFFF);
+      scene.current.add(ambientLight);
+
+      const lights = [
+        new THREE.PointLight(0xffffff, 0.5, 0),
+        new THREE.PointLight(0xffffff, 0.5, 0),
+        new THREE.PointLight(0xffffff, 0.5, 0),
+        new THREE.AmbientLight(0xffffff, 0.6),
+      ];
+
+      lights[0].position.set(200, 0, 0);
+      lights[1].position.set(0, 200, 0);
+      lights[2].position.set(0, 100, 100);
+
+      lights.forEach((light) => {
+        scene.current.add(light);
+      });
+
+      const nucleus = new THREE.Group();
+      nucleus.name = 'nucleus';
+      scene.current.add(nucleus);
+
+      createAtom(protonCount, neutronCount, electronCount, elementData);
+    }
+  }
+
+  return <div ref={containerRef}></div>;
 });
 
 export default AtomAnimation;
+

@@ -24,7 +24,7 @@ const ElementPage = () => {
 
   useEffect(() => {
     fetchElements();
-  }, [element]);
+  }, []);
 
   const startAnimation = () => {
     setAnimationStarted(!animationStarted);

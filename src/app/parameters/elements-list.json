@@ -24,9 +24,9 @@
       "cpkHexColor": "FFFFFF",
       "period": 1,
       "group": 1,
-            "electronLayers": [2, 8, 18, 32, 24, 8, 2],
-      "protons": 1,
-      "neutrons": 1
+      "electronLayers": [2, 8, 18, 32, 24, 8, 2],
+      "protons": 94,
+      "neutrons": 145
     },
     {
       "atomicNumber": 2,
@@ -2629,8 +2629,8 @@
       "period": 7,
       "group": 3,
       "electronLayers": [2, 8, 18, 32, 24, 8, 2],
-      "protons": 1,
-      "neutrons": 1
+      "protons": 94,
+      "neutrons": 145
     },
     {
       "atomicNumber": 95,
