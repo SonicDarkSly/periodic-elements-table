@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useEffect } from "react";
+import React, { useRef, useLayoutEffect } from "react";
 import * as THREE from "three";
 
 const Colors = {
@@ -85,12 +85,14 @@ const createValence = (ringNumber, electronCount) => {
 };
 
 const createValenceLayers = (electronCount, elementData) => {
-  const electronPerLayer = elementData.electronLayers || [2, 8, 18, 32, 24, 8, 2];
+  const electronPerLayer = elementData.electronLayers || [];
   const valences = [];
 
   for (let i = 0; i < electronPerLayer.length; i++) {
     const electronsInLayer = Math.min(electronPerLayer[i], electronCount);
-    if (electronsInLayer <= 0) break;
+    if (electronsInLayer <= 0) {
+      break;
+    }
 
     const valence = createValence(i + 1, electronsInLayer);
     valences.push(valence);
@@ -126,35 +128,58 @@ const createTorus = (
 
 const AtomAnimation = React.memo(
   ({ protonCount, neutronCount, electronCount, elementData }) => {
+    const containerRef = useRef(null);
+    const scene = useRef(new THREE.Scene());
+    const renderer = useRef(null);
+    const camera = useRef(null);
+    const valences = useRef([]);
 
+    let initialProtonCount;
+    let initialNeutronCount;
+    let initialElectronCount;
+    let initialElementData;
+
+    // Vérification des valeurs
     if (
       protonCount === undefined ||
       neutronCount === undefined ||
       electronCount === undefined ||
       !elementData
     ) {
-      return <div>Chargement des données...</div>;
+      initialProtonCount = null;
+      initialNeutronCount = null;
+      initialElectronCount = null;
+      initialElementData = null;
+    }else{
+      initialProtonCount = protonCount;
+      initialNeutronCount = neutronCount;
+      initialElectronCount = electronCount;
+      initialElementData = elementData;
     }
 
-    const containerRef = useRef(null);
-    const scene = useRef(new THREE.Scene());
-    const renderer = useRef(null);
-    const camera = useRef(null);
-    const valences = useRef([]);
-    const nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.005; // Vitesse de rotation du noyau
+    const nucleusRotationSpeed = initialNeutronCount < 70 ? 0.014 : 0.005; // Vitesse de rotation du noyau
 
-    const createAtom = (protonCount, neutronCount, electronCount, elementData) => {
+    const createAtom = (
+      protonCount,
+      neutronCount,
+      electronCount,
+      elementData
+    ) => {
       const nucleus = new THREE.Group();
-      
+
       const protonGeometry = new THREE.SphereGeometry(2, 14, 14);
-      const protonMaterial = new THREE.MeshPhongMaterial({ color: Colors.red, transparent: true, opacity: 0.737 });
-      
+      const protonMaterial = new THREE.MeshPhongMaterial({
+        color: Colors.red,
+        transparent: true,
+        opacity: 0.737,
+      });
+
       // position des prontons differente si < 4
       for (let i = 0; i < protonCount; i++) {
         let posX = 0;
         let posY = 0;
         let posZ = 0;
-        
+
         if (protonCount <= 4) {
           posX = (Math.random() - 0.5) * 1.5;
           posY = (Math.random() - 0.5) * 1.5;
@@ -164,20 +189,24 @@ const AtomAnimation = React.memo(
           posY = (Math.random() - 0.5) * 6;
           posZ = (Math.random() - 0.4) * 6;
         }
-        
+
         const proton = new THREE.Mesh(protonGeometry, protonMaterial);
         proton.position.set(posX, posY, posZ);
         nucleus.add(proton);
       }
-      
+
       const neutronGeometry = new THREE.SphereGeometry(2, 14, 14);
-      const neutronMaterial = new THREE.MeshPhongMaterial({ color: Colors.blue, transparent: true, opacity: 0.773 });
-      
+      const neutronMaterial = new THREE.MeshPhongMaterial({
+        color: Colors.blue,
+        transparent: true,
+        opacity: 0.773,
+      });
+
       for (let i = 0; i < neutronCount; i++) {
         let posX = 0;
         let posY = 0;
         let posZ = 0;
-        
+
         // position des neutrons differente si < 4
         if (neutronCount <= 4) {
           posX = (Math.random() - 0.5) * 1.5;
@@ -188,46 +217,42 @@ const AtomAnimation = React.memo(
           posY = (Math.random() - 0.5) * 6;
           posZ = (Math.random() - 0.4) * 6;
         }
-        
+
         const neutron = new THREE.Mesh(neutronGeometry, neutronMaterial);
         neutron.position.set(posX, posY, posZ);
         nucleus.add(neutron);
       }
-      
+
       nucleus.scale.set(10, 10, 10);
       nucleus.rotation.x = Math.random() * Math.PI * 2; // Rotation initiale aléatoire
-      
+
       scene.current.add(nucleus);
-      
+
       valences.current = createValenceLayers(electronCount, elementData);
       valences.current.forEach((v) => {
         scene.current.add(v);
       });
-      
+
       function render() {
+        requestAnimationFrame(render);
 
-          requestAnimationFrame(render);
-      
-          valences.current.forEach((v, i) => {
-            v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.012; // Vitesse de rotation différente pour chaque couche
-            v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.009;
-            v.rotation.z += nucleusRotationSpeed + (i + 1) * 0.005; // vitesse electron sur orbite
-          });
-      
-          nucleus.rotation.x += nucleusRotationSpeed;
-          nucleus.rotation.y += nucleusRotationSpeed;
-          nucleus.rotation.z += nucleusRotationSpeed;
-      
-          renderer.current.render(scene.current, camera.current);
-        
+        valences.current.forEach((v, i) => {
+          v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.012; // Vitesse de rotation différente pour chaque couche
+          v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.009;
+          v.rotation.z += nucleusRotationSpeed + (i + 1) * 0.005; // vitesse electron sur orbite
+        });
+
+        nucleus.rotation.x += nucleusRotationSpeed;
+        nucleus.rotation.y += nucleusRotationSpeed;
+        nucleus.rotation.z += nucleusRotationSpeed;
+
+        renderer.current.render(scene.current, camera.current);
       }
-      
 
-        render();
-      
+      render();
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (!camera.current) {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -254,34 +279,48 @@ const AtomAnimation = React.memo(
           containerRef.current.appendChild(renderer.current.domElement);
         }
 
-              const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-      scene.current.add(ambientLight);
+        const ambientLight = new THREE.AmbientLight(0xffffff);
+        scene.current.add(ambientLight);
 
-      const lights = [
-        new THREE.PointLight(0xffffff, 0.5, 0),
-        new THREE.PointLight(0xffffff, 0.5, 0),
-        new THREE.PointLight(0xffffff, 0.5, 0),
-        new THREE.AmbientLight(0xffffff, 0.6),
-      ];
+        const lights = [
+          new THREE.PointLight(0xffffff, 0.5, 0),
+          new THREE.PointLight(0xffffff, 0.5, 0),
+          new THREE.PointLight(0xffffff, 0.5, 0),
+          new THREE.AmbientLight(0xffffff, 0.6),
+        ];
 
-      lights[0].position.set(200, 0, 0);
-      lights[1].position.set(0, 200, 0);
-      lights[2].position.set(0, 100, 100);
+        lights[0].position.set(200, 0, 0);
+        lights[1].position.set(0, 200, 0);
+        lights[2].position.set(0, 100, 100);
 
-      lights.forEach((light) => {
-        scene.current.add(light);
-      });
+        lights.forEach((light) => {
+          scene.current.add(light);
+        });
 
-      const nucleus = new THREE.Group();
-      nucleus.name = 'nucleus';
-      scene.current.add(nucleus);
+        const nucleus = new THREE.Group();
+        nucleus.name = "nucleus";
+        scene.current.add(nucleus);
+      }
 
-        createAtom(protonCount, neutronCount, electronCount, elementData);
+      if (
+        initialProtonCount !== null &&
+        initialNeutronCount !== null &&
+        initialElectronCount !== null &&
+        initialElementData
+      ) {
+        createAtom(
+          initialProtonCount,
+          initialNeutronCount,
+          initialElectronCount,
+          initialElementData
+        );
       }
     }, [protonCount, neutronCount, electronCount, elementData]);
 
     return <div className="test" ref={containerRef}></div>;
   }
 );
+
+AtomAnimation.displayName = "AtomAnimation";
 
 export default AtomAnimation;
