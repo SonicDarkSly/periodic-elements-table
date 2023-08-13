@@ -1,0 +1,78 @@
+.page-element {
+  width: 100%;
+
+  .header {
+    margin: 0 auto;
+    width: 90%;
+    padding: 10px;
+  }
+
+  .body {
+    margin: 0 auto;
+    width: 90%;
+    padding: 10px;
+
+    .container-animation {
+      display: flex;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+      background-color: #1f1f1f;
+      border-radius: 7px;
+      border: solid red 1px;
+
+      .animation {
+        z-index: 0;
+        width: 400px;
+        height: 200px;
+        padding: 10px;
+        margin: 5px;
+        margin-top: 80px;
+        transition: 0.7s;
+        
+        &:hover {
+          transform: scale(2.5);
+        }
+      }
+
+      .informations {
+        width: 100%;
+        padding: 10px;
+
+        z-index: 2;
+        background-color: #1f1f1f;
+
+        .element-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+          border-radius: 7px;
+        }
+        
+        .element-table td {
+          padding: 8px;
+          border: 1px solid #ddd;
+
+        }
+        
+        .element-table td:first-child {
+          font-weight: bold;
+          background-color: #f5f5f5;
+          color: black;
+        }
+      }
+    }
+
+    .neon-border {
+      display: flex;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+      background-color: #1f1f1f;
+      border-radius: 7px;
+      border: 2px solid #00ff00; /* Couleur verte vive pour l'effet néon */
+      box-shadow: 0 0 10px #00ff00, 0 0 2px #00ff00, 0 0 5px #00ff00, 0 0 10px #00ff00;
+      transition: border-color 0.5s, box-shadow 0.5s;
+    }    
+  }
+}

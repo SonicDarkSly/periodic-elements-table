@@ -1,5 +1,6 @@
 @import "./settings/settings";
 @import "./pages/home";
+@import "./pages/element";
 @import "./components/table";
 
 body {
@@ -13,15 +14,5 @@ body {
     color: white;
 }
 
-.test {
-    /* Styles pour le div lorsqu'il est présent */
-    width: 100%;
-    height: 100vh;
-  
-    &.hidden {
-        canvas {
-            /* Styles pour le div lorsqu'il est absent */
-            display: none !important;
-          }
-    }
-  }
+
+

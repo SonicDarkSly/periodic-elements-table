@@ -38,7 +38,7 @@ const createValence = (ringNumber, electronCount) => {
     20,
     100,
     Math.PI * 2,
-    "#00FF00",
+    "#00FF00", //ligne verte, options utilisateur ?
     0
   );
 
@@ -61,11 +61,11 @@ const createValence = (ringNumber, electronCount) => {
       angle += angleIncrement;
 
       const electron = createSphere({
-        r: 12,
+        r: 14,
         x: posX,
         y: posY,
         color: Colors.green,
-        opacity: 0.675,
+        opacity: 0.775,
       });
       electrons.push(electron);
     }
@@ -133,6 +133,7 @@ const AtomAnimation = React.memo(
     const renderer = useRef(null);
     const camera = useRef(null);
     const valences = useRef([]);
+    const nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.010; // Vitesse de rotation du noyau
 
     let initialProtonCount;
     let initialNeutronCount;
@@ -156,8 +157,6 @@ const AtomAnimation = React.memo(
       initialElectronCount = electronCount;
       initialElementData = elementData;
     }
-
-    const nucleusRotationSpeed = initialNeutronCount < 70 ? 0.014 : 0.005; // Vitesse de rotation du noyau
 
     const createAtom = (
       protonCount,
@@ -252,27 +251,36 @@ const AtomAnimation = React.memo(
       render();
     };
 
+    const zoom = electronCount > 60 ? 2 : 3
+
     useLayoutEffect(() => {
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
       if (!camera.current) {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+
+        console.log(zoom);
         camera.current = new THREE.OrthographicCamera(
-          width / -2,
-          width / 2,
-          height / 2,
-          height / -2,
+          width / -1,
+          width / 1,
+          height / 1,
+          height / -1,
           -1000,
           1000
         );
-        camera.current.position.z = 10;
+        camera.current.position.z = 20;
       }
+
+      camera.current.zoom = zoom;
+      camera.current.updateProjectionMatrix();
 
       if (!renderer.current) {
         renderer.current = new THREE.WebGLRenderer({
           antialias: true,
           alpha: true,
         });
-        renderer.current.setClearColor(0xececec, 0);
+        renderer.current.setClearColor(0x000000, 0);
         renderer.current.setSize(window.innerWidth, window.innerHeight);
 
         if (containerRef.current) {
@@ -317,7 +325,7 @@ const AtomAnimation = React.memo(
       }
     }, [protonCount, neutronCount, electronCount, elementData]);
 
-    return <div className="test" ref={containerRef}></div>;
+    return <div className="animation" ref={containerRef}></div>;
   }
 );
 

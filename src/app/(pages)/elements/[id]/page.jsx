@@ -25,20 +25,42 @@ const ElementPage = () => {
     fetchElements();
   }, []);
 
-
   return (
-    <div>
-      <h1>Element Details</h1>
-      <a href="/home">retour</a>
+    <div className="page-element">
+      <div className="header">
+        <h1>Fiche pour {element.name}</h1>
+        <a href="/home">retour</a>
+      </div>
 
-      {element && (
-        <AtomAnimation
-          protonCount={element.protons}
-          neutronCount={element.neutrons}
-          electronCount={element.atomicNumber}
-          elementData={element}
-        />
-      )}
+      <div className="body">
+        <div className="container-animation neon-border">
+          {element && (
+            <AtomAnimation
+              protonCount={element.protons}
+              neutronCount={element.neutrons}
+              electronCount={element.atomicNumber}
+              elementData={element}
+            />
+          )}
+
+          <div className="informations">
+            <table className="element-table">
+              <tbody>
+                {Object.entries(element).map(([key, value]) => (
+                  <tr key={key}>
+                    <td>
+                      {key === "electronLayers" ? "Structure de Valence" : key}
+                    </td>
+                    <td>
+                      {key === "electronLayers" ? value.join(", ") : value}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
