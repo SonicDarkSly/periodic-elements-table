@@ -45,14 +45,66 @@ const ElementPage = () => {
 
           <div className="informations">
             <table className="element-table">
-              <tbody>
+            <tbody>
                 {Object.entries(element).map(([key, value]) => (
                   <tr key={key}>
                     <td>
-                      {key === "electronLayers" ? "Structure de Valence" : key}
+                      {key === "electronLayers"
+                        ? "Structure de Valence"
+                        : key === "atomicNumber"
+                        ? "Numéro Atomique"
+                        : key === "symbol"
+                        ? "Symbole"
+                        : key === "atomicMass"
+                        ? "Masse Atomique"
+                        : key === "electronicConfiguration"
+                        ? "Configuration Électronique"
+                        : key === "electronegativity"
+                        ? "Électronégativité"
+                        : key === "atomicRadius"
+                        ? "Rayon Atomique"
+                        : key === "ionRadius"
+                        ? "Rayon Ionique"
+                        : key === "vanDerWaalsRadius"
+                        ? "Rayon de van der Waals"
+                        : key === "ionizationEnergy"
+                        ? "Énergie d'Ionisation"
+                        : key === "electronAffinity"
+                        ? "Affinité Électronique"
+                        : key === "oxidationStates"
+                        ? "États d'Oxidation"
+                        : key === "standardState"
+                        ? "État Standard"
+                        : key === "bondingType"
+                        ? "Type de Liaison"
+                        : key === "meltingPoint"
+                        ? "Point de Fusion"
+                        : key === "boilingPoint"
+                        ? "Point d'Ébullition"
+                        : key === "density"
+                        ? "Densité"
+                        : key === "groupBlock"
+                        ? "Bloc du Groupe"
+                        : key === "yearDiscovered"
+                        ? "Année de Découverte"
+                        : key === "block"
+                        ? "Bloc"
+                        : key === "cpkHexColor"
+                        ? "Couleur CPK en Hex"
+                        : key === "period"
+                        ? "Période"
+                        : key === "group"
+                        ? "Groupe"
+                        : key === "protons"
+                        ? "Protons"
+                        : key === "neutrons"
+                        ? "Neutrons"
+                        : key}
                     </td>
                     <td>
-                      {key === "electronLayers" ? value.join(", ") : value}
+                      {key === "electronLayers"
+                        ? value.join(", ")
+                        : value}
                     </td>
                   </tr>
                 ))}
