@@ -1,12 +1,14 @@
-// export async function GET(Request) {} 
-// export async function HEAD(Request) {} 
-// export async function POST(Request) {} 
-// export async function PUT(Request) {} 
-// export async function DELETE(Request) {} 
+// export async function GET(Request) {}
+// export async function HEAD(Request) {}
+// export async function POST(Request) {}
+// export async function PUT(Request) {}
+// export async function DELETE(Request) {}
+//import { NextRequest, NextResponse } from "next/server";
 
-import { NextRequest, NextResponse } from 'next/server';
-import data from '../../../parameters/elements-list.json';
+import data from "../../../parameters/elements-list.json";
 
-export async function GET(request) {
-  return NextResponse.json(data);
+export async function GET(req) {
+  return Response.json(data, {
+    status: 200,
+  });
 }

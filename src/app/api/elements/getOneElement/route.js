@@ -4,21 +4,32 @@
 // export async function PUT(Request) {}
 // export async function DELETE(Request) {}
 
-import { NextRequest, NextResponse } from "next/server";
+
 import data from "../../../parameters/elements-list.json";
 
-export async function GET(request) {
-  const atomicNumberParam = request.nextUrl.searchParams.get("number");
+export async function GET(req) {
+  const atomicNumberParam = req.nextUrl.searchParams.get("number");
 
-  if (atomicNumberParam !== null) {
+  if (atomicNumberParam) {
     const atomicNumber = parseInt(atomicNumberParam, 10);
 
     const element = data.list.find(
       (elmt) => elmt.atomicNumber === atomicNumber
     );
 
-    return NextResponse.json(element);
+    if (!element) {
+      return Response.json({message: "Element non répertorié"}, {
+        status: 404,
+      });
+    }
+
+    return Response.json(element, {
+      status: 200,
+    });
+
   } else {
-    return NextResponse.json(null);
+    return Response.json({message: "Erreur 500"}, {
+      status: 500
+    });
   }
 }

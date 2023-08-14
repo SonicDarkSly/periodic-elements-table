@@ -2,13 +2,14 @@ import React, { useRef, useLayoutEffect } from "react";
 import * as THREE from "three";
 
 const Colors = {
-  red: 0xff5252,
-  white: 0xffffff,
-  brown: 0x59332e,
-  pink: 0xf5986e,
-  brownDark: 0x23190f,
-  blue: 0x6dbad8,
-  green: 0x46b46b,
+  red: "#ff5252",
+  white: "#ffffff",
+  brown: "#59332e",
+  pink: "#f5986e",
+  brownDark: "#23190f",
+  blue: "#00e5ff", 
+  green: "#39e639", 
+  valences: "#00fbff",
 };
 
 const createSphere = (params) => {
@@ -38,7 +39,7 @@ const createValence = (ringNumber, electronCount) => {
     20,
     100,
     Math.PI * 2,
-    "#00FF00", //ligne verte, options utilisateur ?
+    Colors.valences, //ligne verte, options utilisateur ?
     0
   );
 
@@ -171,7 +172,7 @@ const AtomAnimation = React.memo(
       const protonMaterial = new THREE.MeshPhongMaterial({
         color: Colors.red,
         transparent: true,
-        opacity: 0.800,
+        opacity: 0.700,
       });
 
       // position des prontons differente si < 4
