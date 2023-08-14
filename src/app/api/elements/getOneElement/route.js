@@ -7,11 +7,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import data from "../../../parameters/elements-list.json";
 
-export async function GET(request: NextRequest) {
+export async function GET(request) {
   const atomicNumberParam = request.nextUrl.searchParams.get("number");
 
   if (atomicNumberParam !== null) {
-    const atomicNumber: number = parseInt(atomicNumberParam, 10);
+    const atomicNumber = parseInt(atomicNumberParam, 10);
 
     const element = data.list.find(
       (elmt) => elmt.atomicNumber === atomicNumber

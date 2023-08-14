@@ -7,6 +7,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import data from '../../../parameters/elements-list.json';
 
-export async function GET(request: NextRequest) {
+export async function GET(request) {
   return NextResponse.json(data);
 }

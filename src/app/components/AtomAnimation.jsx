@@ -181,9 +181,9 @@ const AtomAnimation = React.memo(
         let posZ = 0;
 
         if (protonCount <= 4) {
-          posX = (Math.random() - 0.5) * 1.5;
-          posY = (Math.random() - 0.5) * 1.5;
-          posZ = (Math.random() - 0.5) * 1.5;
+          posX = (Math.random() - 0.5) * 3;
+          posY = (Math.random() - 0.5) * 3;
+          posZ = (Math.random() - 0.5) * 3;
         } else {
           posX = (Math.random() - 0.5) * 6;
           posY = (Math.random() - 0.5) * 6;
@@ -209,9 +209,9 @@ const AtomAnimation = React.memo(
 
         // position des neutrons differente si < 4
         if (neutronCount <= 4) {
-          posX = (Math.random() - 0.5) * 1.5;
-          posY = (Math.random() - 0.5) * 1.5;
-          posZ = (Math.random() - 0.5) * 1.5;
+          posX = (Math.random() - 0.5) * 3;
+          posY = (Math.random() - 0.5) * 3;
+          posZ = (Math.random() - 0.5) * 3;
         } else {
           posX = (Math.random() - 0.5) * 6;
           posY = (Math.random() - 0.5) * 6;
