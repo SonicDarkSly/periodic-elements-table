@@ -31,7 +31,7 @@ const createValence = (ringNumber, electronCount) => {
     window.innerWidth > window.innerHeight
       ? window.innerHeight - 40 / 2
       : window.innerWidth - 40 / 2;
-  const radius = 50 + (baseRadius / 20) * ringNumber * 1.5;
+  const radius = 40 + (baseRadius / 20) * ringNumber * 1.3;
   const ring = createTorus(
     radius,
     baseRadius / 2400,
@@ -46,7 +46,7 @@ const createValence = (ringNumber, electronCount) => {
   let currentLayer = 0;
 
   while (electronCount > 0) {
-    const electronPerLayer = [2, 8, 18, 32, 50, 72];
+    const electronPerLayer = [2, 8, 18, 32, 32, 18, 8];
     const electronsInLayer = Math.min(
       electronPerLayer[currentLayer],
       electronCount
@@ -61,11 +61,11 @@ const createValence = (ringNumber, electronCount) => {
       angle += angleIncrement;
 
       const electron = createSphere({
-        r: 14,
+        r: 10,
         x: posX,
         y: posY,
         color: Colors.green,
-        opacity: 0.775,
+        opacity: 0.800,
       });
       electrons.push(electron);
     }
@@ -133,7 +133,8 @@ const AtomAnimation = React.memo(
     const renderer = useRef(null);
     const camera = useRef(null);
     const valences = useRef([]);
-    const nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.010; // Vitesse de rotation du noyau
+
+    const nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.011; // Vitesse de rotation du noyau
 
     let initialProtonCount;
     let initialNeutronCount;
@@ -151,7 +152,7 @@ const AtomAnimation = React.memo(
       initialNeutronCount = null;
       initialElectronCount = null;
       initialElementData = null;
-    }else{
+    } else {
       initialProtonCount = protonCount;
       initialNeutronCount = neutronCount;
       initialElectronCount = electronCount;
@@ -166,11 +167,11 @@ const AtomAnimation = React.memo(
     ) => {
       const nucleus = new THREE.Group();
 
-      const protonGeometry = new THREE.SphereGeometry(2, 14, 14);
+      const protonGeometry = new THREE.SphereGeometry(2, 12, 12);
       const protonMaterial = new THREE.MeshPhongMaterial({
         color: Colors.red,
         transparent: true,
-        opacity: 0.737,
+        opacity: 0.800,
       });
 
       // position des prontons differente si < 4
@@ -194,11 +195,11 @@ const AtomAnimation = React.memo(
         nucleus.add(proton);
       }
 
-      const neutronGeometry = new THREE.SphereGeometry(2, 14, 14);
+      const neutronGeometry = new THREE.SphereGeometry(2, 12, 12);
       const neutronMaterial = new THREE.MeshPhongMaterial({
         color: Colors.blue,
         transparent: true,
-        opacity: 0.773,
+        opacity: 0.800,
       });
 
       for (let i = 0; i < neutronCount; i++) {
@@ -237,8 +238,8 @@ const AtomAnimation = React.memo(
 
         valences.current.forEach((v, i) => {
           v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.012; // Vitesse de rotation différente pour chaque couche
-          v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.009;
-          v.rotation.z += nucleusRotationSpeed + (i + 1) * 0.005; // vitesse electron sur orbite
+          v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.011;
+          v.rotation.z += nucleusRotationSpeed + (i + 2) * 0.020; // vitesse electron sur orbite
         });
 
         nucleus.rotation.x += nucleusRotationSpeed;
@@ -251,16 +252,24 @@ const AtomAnimation = React.memo(
       render();
     };
 
-    const zoom = electronCount > 60 ? 2 : 3
+    let zoom;
+    if (electronCount > 90) {
+      zoom = 2;
+    } else if (electronCount > 60) {
+      zoom = 2;
+    } else if (electronCount > 40) {
+      zoom = 2.5;
+    } else if (electronCount > 17) {
+      zoom = 3;
+    } else {
+      zoom = 4;
+    }
 
     useLayoutEffect(() => {
-
       const width = window.innerWidth;
       const height = window.innerHeight;
 
       if (!camera.current) {
-
-        console.log(zoom);
         camera.current = new THREE.OrthographicCamera(
           width / -1,
           width / 1,
@@ -269,7 +278,7 @@ const AtomAnimation = React.memo(
           -1000,
           1000
         );
-        camera.current.position.z = 20;
+        camera.current.position.z = 10;
       }
 
       camera.current.zoom = zoom;

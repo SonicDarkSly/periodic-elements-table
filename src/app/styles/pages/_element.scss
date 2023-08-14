@@ -19,7 +19,6 @@
       overflow: hidden;
       background-color: #1f1f1f;
       border-radius: 7px;
-      border: solid red 1px;
 
       .animation {
         z-index: 0;
@@ -38,9 +37,8 @@
       .informations {
         width: 100%;
         padding: 10px;
-
         z-index: 2;
-        background-color: #1f1f1f;
+
 
         .element-table {
           width: 100%;
@@ -71,7 +69,7 @@
       background-color: #1f1f1f;
       border-radius: 7px;
       border: 2px solid #00ff00; /* Couleur verte vive pour l'effet néon */
-      box-shadow: 0 0 10px #00ff00, 0 0 2px #00ff00, 0 0 5px #00ff00, 0 0 10px #00ff00;
+      box-shadow: 0 0 10px #6c38c4, 0 0 5px #6c38c4, 0 0 10px #6c38c4, 0 0 15px #6c38c4;
       transition: border-color 0.5s, box-shadow 0.5s;
     }    
   }

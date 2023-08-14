@@ -3,19 +3,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import AtomAnimation from "../../../components/AtomAnimation";
+import NavigationButtons from "../../../components/NavigationButtons";
 
 const ElementPage = () => {
   const params = useParams();
 
+  const id = params.id
   const [element, setElement] = useState({});
+
+  const [loading, setLoading] = useState(false);
 
   const fetchElements = async () => {
     try {
-      const response = await fetch(
-        `/api/elements/getOneElement?number=${params.id}`
-      );
+      setLoading(true)
+      const response = await fetch(`/api/elements/getOneElement?number=${id}`);
       const data = await response.json();
       setElement(data);
+
     } catch (error) {
       console.error("Error fetching elements:", error);
     }
@@ -32,13 +36,20 @@ const ElementPage = () => {
         <a href="/home">retour</a>
       </div>
 
+      <NavigationButtons id={parseInt(id)} />
+
       <div className="body">
-        <div className="container-animation neon-border">
+
+        {
+          loading 
+          
+          ?
+          <div className="container-animation neon-border">
           {element && (
             <AtomAnimation
               protonCount={element.protons}
               neutronCount={element.neutrons}
-              electronCount={element.atomicNumber}
+              electronCount={element.electrons}
               elementData={element}
             />
           )}
@@ -99,6 +110,10 @@ const ElementPage = () => {
                         ? "Protons"
                         : key === "neutrons"
                         ? "Neutrons"
+                        : key === "electrons"
+                        ? "Electrons"
+                        : key === "name"
+                        ? "Nom"
                         : key}
                     </td>
                     <td>
@@ -112,6 +127,12 @@ const ElementPage = () => {
             </table>
           </div>
         </div>
+
+          :
+<div>chargement</div>
+
+        }
+
       </div>
     </div>
   );
