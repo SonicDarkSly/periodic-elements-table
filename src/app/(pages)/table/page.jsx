@@ -178,16 +178,16 @@ const Homepage = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container-table">
       {loading ? (
-        <div>
+<>
           <h1>Tableau périodique des éléments</h1>
           <div className="periodicTable">{generatePeriodicTable()}</div>
           <h2>Lanthanides</h2>
           <div className="periodicTable">{generateLanthanides()}</div>
           <h2>Actinides</h2>
           <div className="periodicTable">{generateActinides()}</div>
-        </div>
+          </>
       ) : (
         <div>chargement</div>
       )}

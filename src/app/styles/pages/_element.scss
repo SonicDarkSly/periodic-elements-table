@@ -12,7 +12,7 @@
     width: 90%;
     padding: 10px;
 
-    .container-animation {
+    .container {
       display: flex;
       width: 100%;
       margin: 0 auto;
@@ -23,6 +23,21 @@
       box-shadow: 0 0 10px #6c38c4, 0 0 5px #6c38c4, 0 0 10px #6c38c4,
         0 0 15px #6c38c4;
       transition: border-color 0.5s, box-shadow 0.5s;
+
+
+
+      .atom-animation-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 300px; /* Ajustez la hauteur selon vos besoins */
+      }
+    
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+    
+      }
 
       .animation {
         z-index: 0;

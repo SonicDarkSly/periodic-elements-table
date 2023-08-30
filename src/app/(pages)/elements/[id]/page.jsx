@@ -88,11 +88,11 @@ const ElementPage = () => {
 
       <div className="body">
         {error ? (
-          <div className="container-animation">
+          <div className="container">
             <p className="error">{error.message}</p>
           </div>
         ) : (
-          <div className="container-animation">
+          <div className="container">
             {loading ? (
               <div className="loading">Chargement...</div>
             ) : (

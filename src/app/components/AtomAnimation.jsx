@@ -135,7 +135,7 @@ const AtomAnimation = React.memo(
     const camera = useRef(null);
     const valences = useRef([]);
 
-    const nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.011; // Vitesse de rotation du noyau
+    let nucleusRotationSpeed = neutronCount < 70 ? 0.014 : 0.011; // Vitesse de rotation du noyau
 
     let initialProtonCount;
     let initialNeutronCount;
@@ -184,7 +184,7 @@ const AtomAnimation = React.memo(
         if (protonCount <= 4) {
           posX = (Math.random() - 0.5) * 3;
           posY = (Math.random() - 0.5) * 3;
-          posZ = (Math.random() - 0.5) * 3;
+          posZ = (Math.random() - 0.4) * 3;
         } else {
           posX = (Math.random() - 0.5) * 6;
           posY = (Math.random() - 0.5) * 6;
@@ -212,7 +212,7 @@ const AtomAnimation = React.memo(
         if (neutronCount <= 4) {
           posX = (Math.random() - 0.5) * 3;
           posY = (Math.random() - 0.5) * 3;
-          posZ = (Math.random() - 0.5) * 3;
+          posZ = (Math.random() - 0.4) * 3;
         } else {
           posX = (Math.random() - 0.5) * 6;
           posY = (Math.random() - 0.5) * 6;
@@ -238,10 +238,15 @@ const AtomAnimation = React.memo(
         requestAnimationFrame(render);
 
         valences.current.forEach((v, i) => {
-          v.rotation.y += nucleusRotationSpeed + (i + 1) * 0.012; // Vitesse de rotation différente pour chaque couche
-          v.rotation.x += nucleusRotationSpeed + (i + 1) * 0.011;
-          v.rotation.z += nucleusRotationSpeed + (i + 2) * 0.020; // vitesse electron sur orbite
+          const rotationSpeedX = nucleusRotationSpeed + (i + 1) * (Math.random() * 0.040); // Rotation aléatoire en X
+          const rotationSpeedY = nucleusRotationSpeed + (i + 1) * (Math.random() * 0.047); // Rotation aléatoire en Y
+          const rotationSpeedZ = nucleusRotationSpeed + (i + 2) * (Math.random() * 0.052); // Rotation aléatoire en Z
+        
+          v.rotation.y += rotationSpeedY;
+          v.rotation.x += rotationSpeedX;
+          v.rotation.z += rotationSpeedZ;
         });
+        
 
         nucleus.rotation.x += nucleusRotationSpeed;
         nucleus.rotation.y += nucleusRotationSpeed;

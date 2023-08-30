@@ -1,17 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {};
 
-module.exports = nextConfig
+module.exports = nextConfig;
 
-// routage 
+// routage
 module.exports = {
-    async redirects() {
-      return [
-        {
-          source: '/',
-          destination: '/table',
-          permanent: true,
-        },
-      ];
-    },
-  };
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/table",
+        permanent: true,
+      },
+    ];
+  },
+};
